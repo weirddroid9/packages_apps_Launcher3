@@ -50,6 +50,7 @@ import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.os.TransactionTooLargeException;
 import android.provider.Settings;
 import android.text.Spannable;
@@ -76,6 +77,7 @@ import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntArray;
@@ -125,9 +127,11 @@ public final class Utilities {
      */
     public static final int EDGE_NAV_BAR = 1 << 8;
 
-    private static final long WAIT_BEFORE_RESTART = 250;
-
     public static final String KEY_SHOW_SEARCHBAR = "pref_show_searchbar";
+    public static final String KEY_DT_GESTURE = "pref_dt_gesture";
+    public static final String KEY_NOTIFICATION_GESTURE = "pref_notification_gesture";
+
+    private static final long WAIT_BEFORE_RESTART = 250;
 
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
@@ -702,8 +706,19 @@ public final class Utilities {
         return prefs.getBoolean(KEY_SHOW_SEARCHBAR, true);
     }
 
+    public static boolean isNotificationGestureEnabled(Context context) {
+        SharedPreferences prefs = getPrefs(context.getApplicationContext());
+        return prefs.getBoolean(KEY_NOTIFICATION_GESTURE, true);
+    }
+
+    public static boolean isDoubleTapGestureEnabled(Context context) {
+        SharedPreferences prefs = getPrefs(context.getApplicationContext());
+        return prefs.getBoolean(KEY_DT_GESTURE, true);
+    }
+
     public static void restart(final Context context) {
-        MODEL_EXECUTOR.execute(() -> {
+        ProgressDialog.show(context, null, context.getString(R.string.state_loading), true, false);
+        Executors.MODEL_EXECUTOR.execute(() -> {
             try {
                 Thread.sleep(WAIT_BEFORE_RESTART);
             } catch (Exception ignored) {

@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -109,7 +110,9 @@ public class SettingsActivity extends FragmentActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (Utilities.KEY_SHOW_SEARCHBAR.equals(key)) {
+        if (Utilities.KEY_SHOW_SEARCHBAR.equals(key)
+               || Utilities.KEY_DT_GESTURE.equals(key)
+               || Utilities.KEY_NOTIFICATION_GESTURE.equals(key)) {
             LauncherAppState.getInstanceNoCreate().setNeedsRestart();
         }
     }
