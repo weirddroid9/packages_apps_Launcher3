@@ -868,13 +868,12 @@ public class InvariantDeviceProfile {
     String rowVal = prefs.getString("custom_grid_rows", "5");
     String colVal = prefs.getString("custom_grid_cols", "5");
     try {
-        int customRows = Integer.parseInt(rowVal);
-        int customCols = Integer.parseInt(colVal);
-        if (customRows > 0 && customCols > 0) {
-            this.numRows = customRows;
-            this.numColumns = customCols;
-            this.dbFile = "launcher_custom_" + customRows + "_" + customCols + ".db";
-            return;
+        int numRows = p.getIntValue(RES_GRID_NUM_ROWS, -1);
+        int numColumns = p.getIntValue(RES_GRID_NUM_COLUMNS, -1);
+        if (numRows > 0 && numColumns > 0) {
+            this.numRows = numRows;
+            this.numColumns = numColumns;
+            this.dbFile = "launcher_" + numRows + "_" + numColumns + ".db";
         }
     } catch (NumberFormatException e) {
         Log.e(TAG, "Failed to parse custom grid: " + rowVal + "x" + colVal);

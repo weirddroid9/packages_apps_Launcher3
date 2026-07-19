@@ -352,21 +352,14 @@ public class GridCustomizationsProxy implements ProxyProvider {
         return switch (method) {
             case METHOD_GET_PREVIEW -> getPreview(extras);
             case METHOD_GET_PREVIEW_BITMAP -> getPreviewBitmap(extras);
-            case "set_grid" -> {
-                Context ctx = this.mContext;
-                com.android.launcher3.LauncherPrefs.get(ctx).put(
-                    com.android.launcher3.LauncherPrefs.GRID_NAME, arg);
-                com.android.launcher3.InvariantDeviceProfile.INSTANCE.get(ctx).onConfigChanged();
-                android.net.Uri gridUri = new android.net.Uri.Builder()
-                        .scheme("content")
-                        .authority(ctx.getPackageName() + ".grid_control")
-                        .appendPath("grid")
-                        .build();
-                ctx.getContentResolver().notifyChange(gridUri, null);
-                Bundle result = new Bundle();
-                result.putBoolean("serialize_sync", true);
-                yield result;
-            }
+    case "set_grid" -> {
+        int rows = extras.getInt("rows");
+        int cols = extras.getInt("cols");
+        LauncherPrefs.get(getContext()).putInt("pref_grid_rows", rows);
+        LauncherPrefs.get(getContext()).putInt("pref_grid_cols", cols);
+        LauncherAppState.getInstance(getContext()).getInvariantDeviceProfile().setCustomGrid(rows, cols);
+        yield Bundle.EMPTY;
+    }
             default -> null;
         };
     }

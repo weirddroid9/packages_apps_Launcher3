@@ -3082,6 +3082,18 @@ public class Launcher extends StatefulActivity<LauncherState>
         mLauncherUiState.setIsTopResumedActivity(isResumed);
     }
 
+    private void registerThemeObserver() {
+        getContentResolver().registerContentObserver(
+            Settings.Secure.getUriFor("theme_customization_overlay_packages"),
+            false,
+            new ContentObserver(new Handler(Looper.getMainLooper())) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    LauncherAppState.getInstance(Launcher.this).getInvariantDeviceProfile().onConfigChanged();
+                }
+            }
+        );
+    }
 
     // End of Getters and Setters
 }
